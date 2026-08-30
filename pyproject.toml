@@ -8,10 +8,11 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "aiosqlite>=0.22.1",
     "alembic>=1.19.1",
-    "fastapi>=0.141.1",
+    "fastapi[standard]>=0.141.1",
     "python-dotenv>=1.2.3",
-    "sqlalchemy>=2.0.52",
+    "sqlalchemy[asyncio]>=2.0.52",
 ]
 
 [project.scripts]
@@ -20,6 +21,9 @@ inventory = "inventory:main"
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.fastapi]
+entrypoint = "inventory.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/inventory"]
