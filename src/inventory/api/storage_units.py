@@ -8,10 +8,18 @@ from inventory.services.storage_unit import StorageUnitService
 
 storage_units_router = APIRouter()
 
+@storage_units_router.get("/")
+async def list_storage_units() -> list[StorageUnit]:
+  async with SessionLocal() as session:
+    service = StorageUnitService(
+      repository=StorageUnitRepository(session)
+    )
+    return await service.list()
+
 @storage_units_router.post("/")
 async def create(storage_unit: StorageUnitCreate) -> StorageUnit:
   async with SessionLocal() as session:
     service = StorageUnitService(
       repository=StorageUnitRepository(session)
     )
-    return service.create(storage_unit)
+    return await service.create(storage_unit)
