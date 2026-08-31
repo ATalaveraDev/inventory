@@ -5,4 +5,4 @@ class StorageUnitService:
     self.repository = repository
 
   async def create(self, storage_unit):
-    return self.repository.create(storage_unit)
+    return await self.repository.create(storage_unit)

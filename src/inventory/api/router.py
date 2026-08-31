@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from inventory.api.movies import movies_router
 from inventory.api.storage_units import storage_units_router
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 router.include_router(
   movies_router,

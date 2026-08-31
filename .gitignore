@@ -2,3 +2,8 @@ inventory.db
 .env
 **/__pycache__/*
 *.pyc
+
+# Angular UI
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
