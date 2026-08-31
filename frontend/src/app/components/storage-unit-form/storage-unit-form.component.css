@@ -1,0 +1,65 @@
+:host { display: block; }
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3125rem;
+  flex: 1 1 14rem;
+}
+
+.field--narrow {
+  flex: 0 1 8rem;
+}
+
+.field__label {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.field__input {
+  font: inherit;
+  padding: 0.5rem 0.625rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  transition: border-color 140ms ease;
+}
+
+.field__input:hover { border-color: var(--text-muted); }
+
+.field__input[aria-invalid='true'] { border-color: var(--accent); }
+
+.field__error {
+  color: var(--text);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+}
+
+/* Aligns the control with the inputs, past the labels above them. */
+.submit {
+  font: inherit;
+  font-weight: 500;
+  margin-top: calc(var(--text-sm) * 1.55 + 0.3125rem);
+  padding: 0.5rem 1rem;
+  color: var(--on-accent);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: opacity 140ms ease;
+}
+
+.submit:hover:not(:disabled) { opacity: 0.88; }
+
+.submit:disabled {
+  opacity: 0.55;
+  cursor: default;
+}

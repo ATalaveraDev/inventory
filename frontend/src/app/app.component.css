@@ -1,0 +1,94 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+/* ── Skip link ─────────────────────────────────────────────── */
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip:focus-visible {
+  left: var(--gutter);
+  top: 0.75rem;
+  z-index: 2;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+
+/* ── Top rail ──────────────────────────────────────────────── */
+
+.rail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: var(--rail-height);
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand__mark {
+  width: 0.875rem;
+  height: 1rem;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+
+.brand__name {
+  font-stretch: 112%;
+  font-weight: 600;
+  font-size: var(--text-md);
+  letter-spacing: -0.01em;
+}
+
+.nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.nav__link {
+  position: relative;
+  padding-block: 0.35rem;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+
+.nav__link:hover { color: var(--text); }
+
+.nav__link.is-current { color: var(--text); }
+
+/* The current section carries a short accent seam under the label. */
+.nav__link.is-current::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* ── Content ───────────────────────────────────────────────── */
+
+.main {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding: clamp(2.5rem, 6vw, 4.5rem) var(--gutter) 4rem;
+}

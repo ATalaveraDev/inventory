@@ -1,1 +1,108 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   Inventory — global styles
+
+   Palette: matte console plastics. The colours are taken from
+   hardware and printed manuals rather than screens, so there is
+   no glow anywhere: a cool bone shell, graphite ink, and a
+   single muted face-button violet used sparingly.
+   ============================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* Palette */
+  --shell:       #e9eae7;  /* console body plastic */
+  --shell-raised:#f7f7f5;  /* raised panel */
+  --ink:         #1b1d21;  /* cartridge shell */
+  --ink-muted:   #5c6068;  /* silkscreen label */
+  --seam:        #d3d5d0;  /* panel seam */
+  --violet:      #6e6193;  /* face button */
+  --on-violet:   #f7f7f5;  /* legend printed on the button */
+
+  /* Roles */
+  --bg: var(--shell);
+  --surface: var(--shell-raised);
+  --text: var(--ink);
+  --text-muted: var(--ink-muted);
+  --line: var(--seam);
+  --accent: var(--violet);
+  --on-accent: var(--on-violet);
+  --accent-faint: color-mix(in srgb, var(--violet) 12%, transparent);
+
+  /* Type */
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+  /* Reserved for data once there is data: counts, capacities, ids. */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.75rem, 1.15rem + 2.4vw, 2.75rem);
+
+  /* Layout */
+  --rail-height: 3.5rem;
+  --measure: 68rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --shell:       #16181c;
+    --shell-raised:#1e2126;
+    --ink:         #e7e7e4;
+    --ink-muted:   #91959c;
+    --seam:        #2c3038;
+    --violet:      #9b8dc6;
+    --on-violet:   #16181c;
+  }
+}
+
+/* ── Reset ─────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p { margin: 0; }
+
+/* ── Base type ─────────────────────────────────────────────── */
+
+/* Headings run slightly expanded — the proportions of type
+   silkscreened onto a console lid rather than set in a book. */
+h1, h2, h3 {
+  font-family: var(--font-sans);
+  font-stretch: 112%;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+/* ── Quality floor ─────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,25 @@
+<section>
+  <header>
+    <h1 class="title">Storage units</h1>
+    <p class="lede">Shelves, cases, and boxes &mdash; and what is filed on each.</p>
+  </header>
+
+  <app-storage-unit-form class="form" [pending]="saving()" (create)="add($event)" />
+
+  @if (error(); as message) {
+    <p class="error" role="alert">
+      {{ message }}
+      <button class="retry" type="button" (click)="load()">Retry</button>
+    </p>
+  }
+
+  <div class="results">
+    @if (loading()) {
+      <p class="status">Loading storage units&hellip;</p>
+    } @else if (units().length) {
+      <app-storage-unit-list [units]="units()" />
+    } @else {
+      <app-empty-shelf />
+    }
+  </div>
+</section>

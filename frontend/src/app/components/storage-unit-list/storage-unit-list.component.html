@@ -1,0 +1,7 @@
+<ul class="list">
+  @for (unit of units(); track unit.id) {
+    <li class="list__row">
+      <app-storage-unit-card [unit]="unit" />
+    </li>
+  }
+</ul>

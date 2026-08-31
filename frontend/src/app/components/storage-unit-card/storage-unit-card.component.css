@@ -1,0 +1,42 @@
+:host { display: block; }
+
+/* Each unit reads as a spine on a shelf: an accent edge, then the label. */
+.card {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.card__spine {
+  flex: 0 0 3px;
+  background: var(--accent);
+}
+
+.card__body {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.125rem 0.875rem 0;
+}
+
+.card__name {
+  font-stretch: 100%;
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.card__capacity {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+/* Mono earns its place here: a figure meant to be compared down the column. */
+.card__figure {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text);
+}

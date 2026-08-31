@@ -1,0 +1,39 @@
+<form class="form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="field">
+    <label class="field__label" for="storage-unit-name">Name</label>
+    <input class="field__input" id="storage-unit-name" type="text" formControlName="name"
+           maxlength="50" autocomplete="off"
+           [attr.aria-invalid]="name.touched && name.invalid ? 'true' : null"
+           [attr.aria-describedby]="name.touched && name.invalid ? 'storage-unit-name-error' : null" />
+    @if (name.touched && name.invalid) {
+      <p class="field__error" id="storage-unit-name-error">
+        @if (name.hasError('required')) {
+          Give the unit a name, such as "Living room shelf".
+        } @else {
+          Names are 50 characters at most.
+        }
+      </p>
+    }
+  </div>
+
+  <div class="field field--narrow">
+    <label class="field__label" for="storage-unit-capacity">Capacity</label>
+    <input class="field__input" id="storage-unit-capacity" type="number" formControlName="capacity"
+           min="0" step="1" inputmode="numeric"
+           [attr.aria-invalid]="capacity.touched && capacity.invalid ? 'true' : null"
+           [attr.aria-describedby]="capacity.touched && capacity.invalid ? 'storage-unit-capacity-error' : null" />
+    @if (capacity.touched && capacity.invalid) {
+      <p class="field__error" id="storage-unit-capacity-error">
+        @if (capacity.hasError('required')) {
+          Set how many slots it holds.
+        } @else {
+          Capacity cannot be negative.
+        }
+      </p>
+    }
+  </div>
+
+  <button class="submit" type="submit" [disabled]="pending()">
+    {{ pending() ? 'Adding…' : 'Add storage unit' }}
+  </button>
+</form>
