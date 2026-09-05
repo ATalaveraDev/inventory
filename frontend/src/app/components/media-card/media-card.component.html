@@ -1,0 +1,21 @@
+<article class="card" [class.card--series]="item().kind === 'series'">
+  <span class="card__spine" aria-hidden="true"></span>
+
+  <div class="card__body">
+    <div class="card__identity">
+      <h3 class="card__title">{{ item().title }}</h3>
+      <p class="card__kind">{{ kindLabels[item().kind] }}</p>
+    </div>
+
+    <dl class="card__facts">
+      <div class="fact">
+        <dt class="fact__label">Year</dt>
+        <dd class="fact__value fact__value--figure">{{ item().year ?? '—' }}</dd>
+      </div>
+      <div class="fact">
+        <dt class="fact__label">Filed on</dt>
+        <dd class="fact__value">{{ storageUnitName() ?? 'Unfiled' }}</dd>
+      </div>
+    </dl>
+  </div>
+</article>

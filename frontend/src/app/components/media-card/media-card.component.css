@@ -1,0 +1,77 @@
+:host { display: block; }
+
+/* Same spine-on-a-shelf reading as a storage unit, so a title and the unit it
+   sits on look like they belong to one system. Series carry a broken spine to
+   tell the two kinds apart without relying on the label alone. */
+.card {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.card__spine {
+  flex: 0 0 3px;
+  background: var(--accent);
+}
+
+.card--series .card__spine {
+  background: repeating-linear-gradient(
+    var(--accent) 0 6px,
+    transparent 6px 10px
+  );
+}
+
+.card__body {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  padding: 0.875rem 1.125rem 0.875rem 0;
+}
+
+.card__title {
+  font-stretch: 100%;
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.card__kind {
+  margin-top: 0.15rem;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.card__facts {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.fact__label {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fact__value {
+  margin: 0;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+/* Mono earns its place here: a figure meant to be compared down the column. */
+.fact__value--figure {
+  font-family: var(--font-mono);
+}

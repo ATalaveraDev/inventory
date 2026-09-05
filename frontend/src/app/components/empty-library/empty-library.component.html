@@ -1,0 +1,26 @@
+<div class="empty">
+  <!-- Two cases stood on end, one open: where a title goes once it is added. -->
+  <svg class="cases" viewBox="0 0 320 132" aria-hidden="true" focusable="false">
+    <g class="cases__stack">
+      <rect x="96"  y="34" width="50" height="78" rx="2" class="cases__case cases__case--next" />
+      <line x1="106" y1="34" x2="106" y2="112" class="cases__hinge cases__hinge--next" />
+      <rect x="154" y="34" width="50" height="78" rx="2" class="cases__case" />
+      <line x1="164" y1="34" x2="164" y2="112" class="cases__hinge" />
+    </g>
+    <path class="cases__rail" d="M16 122 V112 H304 V122" />
+  </svg>
+
+  @if (filtered()) {
+    <h2 class="empty__title">Nothing of that kind yet</h2>
+    <p class="empty__body">
+      There are titles in the library, but none match what you are showing.
+      Switch back to <em>All</em> to see the rest.
+    </p>
+  } @else {
+    <h2 class="empty__title">The library is empty</h2>
+    <p class="empty__body">
+      Add a movie or a series above and it will be listed here with its year
+      and the unit it is filed on.
+    </p>
+  }
+</div>

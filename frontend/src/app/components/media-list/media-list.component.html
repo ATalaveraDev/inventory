@@ -1,0 +1,7 @@
+<ul class="list">
+  @for (item of items(); track item.kind + '-' + item.id) {
+    <li class="list__row">
+      <app-media-card [item]="item" [storageUnitName]="storageUnitName(item)" />
+    </li>
+  }
+</ul>

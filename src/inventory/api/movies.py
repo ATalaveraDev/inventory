@@ -14,3 +14,11 @@ async def post_movie(movie: MovieCreate) -> Movie:
       repository=MovieRepository(session)
     )
     return await service.create(movie)
+
+@movies_router.get("/")
+async def list_movies() -> list[Movie]:
+  async with SessionLocal() as session:
+    service = MovieService(
+      repository=MovieRepository(session)
+    )
+    return await service.list()

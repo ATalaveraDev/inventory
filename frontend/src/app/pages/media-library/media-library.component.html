@@ -1,0 +1,35 @@
+<section>
+  <header>
+    <h1 class="title">Movies &amp; series</h1>
+    <p class="lede">Everything on the shelves &mdash; what it is, when it came out, and where it lives.</p>
+  </header>
+
+  <app-media-form class="form" [pending]="saving()" [storageUnits]="storageUnits()"
+                  (create)="add($event)" />
+
+  @if (error(); as message) {
+    <p class="error" role="alert">
+      {{ message }}
+      <button class="retry" type="button" (click)="reload()">Retry</button>
+    </p>
+  }
+
+  <div class="results">
+    @if (items().length) {
+      <div class="toolbar">
+        <app-media-filter [selected]="filter()" (selectedChange)="show($event)" />
+        <p class="count" aria-live="polite">
+          {{ visibleItems().length }} of {{ items().length }} shown
+        </p>
+      </div>
+    }
+
+    @if (loading()) {
+      <p class="status">Loading titles&hellip;</p>
+    } @else if (visibleItems().length) {
+      <app-media-list [items]="visibleItems()" [storageUnits]="storageUnits()" />
+    } @else {
+      <app-empty-library [filtered]="filteredToNothing()" />
+    }
+  </div>
+</section>

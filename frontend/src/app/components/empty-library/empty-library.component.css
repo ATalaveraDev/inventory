@@ -1,0 +1,87 @@
+:host { display: block; }
+
+.empty {
+  padding: clamp(2.5rem, 6vw, 4rem) var(--gutter) clamp(3rem, 7vw, 4.5rem);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  text-align: center;
+}
+
+.cases {
+  display: block;
+  width: min(20rem, 100%);
+  height: auto;
+  margin: 0 auto clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.cases__case {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+}
+
+.cases__case--next {
+  stroke: var(--accent);
+  fill: var(--accent-faint);
+}
+
+.cases__hinge {
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.cases__hinge--next {
+  stroke: var(--accent);
+}
+
+.cases__rail {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 2;
+  stroke-linecap: square;
+}
+
+.empty__title {
+  font-size: var(--text-lg);
+}
+
+.empty__body {
+  max-width: 30rem;
+  margin: 0.5rem auto 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* ── Load sequence ─────────────────────────────────────────── */
+/* The rail draws itself, then the cases settle onto it. Matches the
+   empty shelf next door: one moment, once — nothing loops. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .cases__rail {
+    stroke-dasharray: 312;
+    stroke-dashoffset: 312;
+    animation: draw-rail 620ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+
+  .cases__stack > * {
+    opacity: 0;
+    transform: translateY(6px);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: settle 420ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+
+  .cases__stack > *:nth-child(1) { animation-delay: 380ms; }
+  .cases__stack > *:nth-child(2) { animation-delay: 380ms; }
+  .cases__stack > *:nth-child(3) { animation-delay: 470ms; }
+  .cases__stack > *:nth-child(4) { animation-delay: 470ms; }
+}
+
+@keyframes draw-rail {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes settle {
+  to { opacity: 1; transform: translateY(0); }
+}

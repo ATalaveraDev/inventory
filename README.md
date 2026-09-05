@@ -1,0 +1,164 @@
+# Inventory
+
+A small inventory app for tracking media (movies, series) across storage units.
+
+- **Backend** — FastAPI + SQLAlchemy (async) + Alembic, served from `src/inventory`.
+- **Frontend** — Angular 19 single-page app in `frontend/`.
+- **Database** — SQLite, stored as a plain file in the repo root. **No Docker or database server is required.**
+
+## Prerequisites
+
+| Tool | Version | Notes |
+| --- | --- | --- |
+| [uv](https://docs.astral.sh/uv/) | 0.12+ | Manages the Python toolchain and dependencies. |
+| Python | 3.14 | `uv` installs it automatically from `.python-version`. |
+| Node.js | 20+ (24 tested) | Needed only for the frontend. |
+| npm | 10+ | Ships with Node. |
+
+## First-time setup
+
+Run everything from the repository root.
+
+```bash
+# 1. Configuration — .env is gitignored, so create your own from the template
+cp .env.example .env
+
+# 2. Backend dependencies (creates .venv and installs from uv.lock)
+uv sync
+
+# 3. Database — create inventory.db and apply all migrations
+uv run alembic upgrade head
+
+# 4. Frontend dependencies
+npm --prefix frontend install
+```
+
+### Environment variables
+
+`.env` is read by both the API and Alembic (via `python-dotenv`). Both variables are **required** — the app raises a `KeyError` at import time if either is missing.
+
+| Variable | Example | Purpose |
+| --- | --- | --- |
+| `DB_URL` | `sqlite+aiosqlite:///./inventory.db` | Async SQLAlchemy connection URL. |
+| `CORS_ALLOW_ORIGINS` | `http://localhost:4200` | Comma-separated list of origins allowed by the CORS middleware. |
+
+> The SQLite path in `DB_URL` is **relative to the current working directory**, so always run `uv run ...` commands from the repo root or you will silently get a second, empty database.
+
+## Running in development
+
+Development uses two processes: the API on port 8000 and the Angular dev server on port 4200. The dev server proxies `/api` to the backend (see `frontend/proxy.conf.json`), so the browser only ever talks to port 4200.
+
+**Terminal 1 — backend:**
+
+```bash
+uv run fastapi dev src/inventory/main.py
+```
+
+Serves on <http://localhost:8000> with auto-reload. Interactive API docs: <http://localhost:8000/docs>.
+
+Equivalent, if you prefer driving uvicorn directly:
+
+```bash
+uv run uvicorn inventory.main:app --reload
+```
+
+**Terminal 2 — frontend:**
+
+```bash
+npm --prefix frontend start
+```
+
+Open <http://localhost:4200>. The app redirects to `/storage-units`.
+
+## Running as a single production-style process
+
+`main.py` mounts `frontend/dist/inventory-ui/browser` at `/` when that directory exists, with an index.html fallback so Angular's client-side routes survive a page refresh. The mount happens last, so it never shadows `/api`, `/docs` or `/openapi.json`.
+
+```bash
+npm --prefix frontend run build          # produces frontend/dist/inventory-ui/
+uv run fastapi run src/inventory/main.py # serves API + UI on http://localhost:8000
+```
+
+Note that the dist folder is picked up at **startup**: rebuild the UI before starting the server, and restart the server if the folder did not exist before.
+
+## Database
+
+The database is a single SQLite file, `inventory.db`, in the repo root. It is gitignored, so each developer creates their own. There is nothing to install, start, or containerize.
+
+Schema changes are managed with Alembic (`alembic/versions/`); `src/inventory/schema.sql` is a reference sketch of the schema and is **not** executed by the app.
+
+### Common commands
+
+```bash
+uv run alembic upgrade head        # create/update the database to the latest schema
+uv run alembic current             # show the revision the database is on
+uv run alembic history             # list revisions
+uv run alembic downgrade -1        # roll back the last migration
+```
+
+### Creating a migration
+
+Models live in `src/inventory/models/` and must be exported from `src/inventory/models/__init__.py` — `alembic/env.py` imports that package to populate `Base.metadata`, so a model that is not exported there is invisible to autogenerate.
+
+```bash
+uv run alembic revision --autogenerate -m "describe the change"
+# review the generated file in alembic/versions/, then:
+uv run alembic upgrade head
+```
+
+Migrations run with `render_as_batch=True`, which SQLite needs for most `ALTER TABLE` operations.
+
+### Starting over
+
+```bash
+rm inventory.db
+uv run alembic upgrade head
+```
+
+### Inspecting the data
+
+```bash
+uv run python -c "import sqlite3;c=sqlite3.connect('inventory.db');print(c.execute('select * from storage_units').fetchall())"
+```
+
+Or open `inventory.db` with any SQLite client (`sqlite3`, DB Browser for SQLite, a DataGrip/VS Code extension).
+
+### Switching to another database
+
+`DB_URL` is the only place the database is configured. Pointing it at e.g. `postgresql+asyncpg://user:pass@localhost/inventory` is enough for the app, but you would also need to add the matching async driver to `pyproject.toml` and review the migrations, which were autogenerated for SQLite.
+
+## API
+
+All routes are under `/api` (`src/inventory/api/router.py`):
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/api/storage_units/` | List storage units. |
+| `POST` | `/api/storage_units/` | Create a storage unit. |
+| `POST` | `/api/movies/` | Create a movie. |
+
+## Tests
+
+```bash
+npm --prefix frontend test   # Angular unit tests (Karma + Jasmine, needs Chrome)
+```
+
+There is no backend test suite yet.
+
+## Project layout
+
+```
+alembic/                 Migration environment and versions
+src/inventory/
+  main.py                FastAPI app: CORS, routers, static UI mount
+  api/                   HTTP routers and error handlers
+  services/              Business logic
+  repositories/          Database access
+  models/                SQLAlchemy ORM models (source of truth for migrations)
+  schemas/               Pydantic request/response schemas
+  db/database.py         Engine and session factory
+frontend/src/app/
+  pages/                 Routed page components
+  components/            Presentational components
+  services/              HTTP clients
+```

@@ -1,0 +1,63 @@
+<form class="form" [formGroup]="form" (ngSubmit)="submit()">
+  <fieldset class="kind">
+    <legend class="kind__legend">Kind</legend>
+    <div class="kind__options">
+      <label class="kind__option">
+        <input class="kind__radio" type="radio" formControlName="kind" value="movie" />
+        <span class="kind__label">Movie</span>
+      </label>
+      <label class="kind__option">
+        <input class="kind__radio" type="radio" formControlName="kind" value="series" />
+        <span class="kind__label">Series</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <div class="field">
+    <label class="field__label" for="media-title">Title</label>
+    <input class="field__input" id="media-title" type="text" formControlName="title"
+           maxlength="100" autocomplete="off"
+           [attr.aria-invalid]="title.touched && title.invalid ? 'true' : null"
+           [attr.aria-describedby]="title.touched && title.invalid ? 'media-title-error' : null" />
+    @if (title.touched && title.invalid) {
+      <p class="field__error" id="media-title-error">
+        @if (title.hasError('required')) {
+          Give the title a name, such as "Seven Samurai".
+        } @else {
+          Titles are 100 characters at most.
+        }
+      </p>
+    }
+  </div>
+
+  <div class="field field--narrow">
+    <label class="field__label" for="media-year">
+      Year <span class="field__optional">optional</span>
+    </label>
+    <input class="field__input" id="media-year" type="number" formControlName="year"
+           [min]="minYear" [max]="maxYear" step="1" inputmode="numeric"
+           [attr.aria-invalid]="year.touched && year.invalid ? 'true' : null"
+           [attr.aria-describedby]="year.touched && year.invalid ? 'media-year-error' : null" />
+    @if (year.touched && year.invalid) {
+      <p class="field__error" id="media-year-error">
+        Use a year between {{ minYear }} and {{ maxYear }}.
+      </p>
+    }
+  </div>
+
+  <div class="field field--narrow">
+    <label class="field__label" for="media-storage-unit">
+      Filed on <span class="field__optional">optional</span>
+    </label>
+    <select class="field__input" id="media-storage-unit" formControlName="storageUnitId">
+      <option [ngValue]="null">Unfiled</option>
+      @for (unit of storageUnits(); track unit.id) {
+        <option [ngValue]="unit.id">{{ unit.name }}</option>
+      }
+    </select>
+  </div>
+
+  <button class="submit" type="submit" [disabled]="pending()">
+    {{ pending() ? 'Adding…' : 'Add title' }}
+  </button>
+</form>
