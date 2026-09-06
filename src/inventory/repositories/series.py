@@ -3,21 +3,21 @@ from collections.abc import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from inventory.models.movie import Movie
+from inventory.models.serie import Serie
 
 
-class MovieRepository:
+class SeriesRepository:
   def __init__(self, session: AsyncSession):
     self.session = session
 
-  async def create(self, movie: Movie) -> Movie:
-    self.session.add(movie)
+  async def create(self, serie: Serie) -> Serie:
+    self.session.add(serie)
     await self.session.flush()
     await self.session.commit()
-    return movie
+    return serie
 
-  async def list(self) -> Sequence[Movie]:
+  async def list(self) -> Sequence[Serie]:
     result = await self.session.scalars(
-      select(Movie).order_by(Movie.title)
+      select(Serie).order_by(Serie.title)
     )
     return result.all()

@@ -20,4 +20,4 @@ class StorageUnit(Base):
     nullable=False,
   )
   movies: Mapped[list["Movie"]] = relationship(back_populates="storage_unit")
-  series: Mapped[list["Series"]] = relationship(back_populates="storage_unit")
+  series: Mapped[list["Serie"]] = relationship(back_populates="storage_unit")

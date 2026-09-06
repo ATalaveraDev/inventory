@@ -6,14 +6,17 @@ import { MediaFormComponent } from '../../components/media-form/media-form.compo
 import { MediaListComponent } from '../../components/media-list/media-list.component';
 import { MediaFilter, MediaItem, MediaItemCreate } from '../../models/media-item';
 import { StorageUnit } from '../../models/storage-unit';
+import { MediaService } from '../../services/media.service';
 import { StorageUnitsService } from '../../services/storage-units.service';
 
+/** The order both APIs list their rows in, kept as titles are added. */
+function byTitle(a: MediaItem, b: MediaItem): number {
+  return a.title.localeCompare(b.title);
+}
+
 /**
- * Owns the movies and series on screen: holds them, adds to them, and decides
+ * Owns the movies and series on screen: loads them, adds to them, and decides
  * which state to show. The pieces it composes stay presentational.
- *
- * Loading and saving titles are stubbed below and wired in a later iteration;
- * the API exposes no way to read them yet.
  */
 @Component({
   selector: 'app-media-library',
@@ -27,13 +30,14 @@ import { StorageUnitsService } from '../../services/storage-units.service';
   styleUrl: './media-library.component.css'
 })
 export class MediaLibraryComponent implements OnInit {
+  private readonly media = inject(MediaService);
   private readonly storageUnitsService = inject(StorageUnitsService);
   protected readonly form = viewChild(MediaFormComponent);
 
   readonly items = signal<MediaItem[]>([]);
   readonly storageUnits = signal<StorageUnit[]>([]);
   readonly filter = signal<MediaFilter>('all');
-  readonly loading = signal(false);
+  readonly loading = signal(true);
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
 
@@ -61,6 +65,54 @@ export class MediaLibraryComponent implements OnInit {
     this.load();
   }
 
+  load(): void {
+    this.loading.set(true);
+
+    this.media.list().subscribe({
+      next: (items) => {
+        this.items.set([...items].sort(byTitle));
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('The titles could not be loaded. Check that the API is running, then retry.');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  show(filter: MediaFilter): void {
+    this.filter.set(filter);
+  }
+
+  add(draft: MediaItemCreate): void {
+    this.saving.set(true);
+    this.error.set(null);
+
+    this.media.create(draft).subscribe({
+      next: (created) => {
+        // Kept in the same order both APIs list them in, by title.
+        this.items.update((items) => [...items, created].sort(byTitle));
+        this.reveal(created);
+        this.saving.set(false);
+        this.form()?.reset();
+      },
+      error: () => {
+        this.error.set(`"${draft.title}" was not saved. Check that the API is running, then try again.`);
+        this.saving.set(false);
+      },
+    });
+  }
+
+  /**
+   * A title saved while the other kind is on screen would land outside the
+   * filter and read as a silent failure, so widen the filter to show it.
+   */
+  private reveal(item: MediaItem): void {
+    if (this.filter() !== 'all' && this.filter() !== item.kind) {
+      this.filter.set('all');
+    }
+  }
+
   /**
    * The units a title can be filed on. They are only ever offered as a choice,
    * so failing to load them leaves the page usable: the form falls back to
@@ -76,26 +128,5 @@ export class MediaLibraryComponent implements OnInit {
         );
       },
     });
-  }
-
-  /**
-   * TODO(next iteration): load the titles themselves, mirroring
-   * StorageUnitsComponent.load(). Needs GET /api/movies/ and GET /api/series/,
-   * neither of which the API exposes yet.
-   */
-  load(): void {
-    // Intentionally empty until those endpoints exist.
-  }
-
-  show(filter: MediaFilter): void {
-    this.filter.set(filter);
-  }
-
-  /**
-   * TODO(next iteration): POST the draft to /api/movies/ or /api/series/ by its
-   * kind, append the saved title, then call `this.form()?.reset()`.
-   */
-  add(draft: MediaItemCreate): void {
-    void draft;
   }
 }
