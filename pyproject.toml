@@ -11,6 +11,7 @@ dependencies = [
     "aiosqlite>=0.22.1",
     "alembic>=1.19.1",
     "fastapi[standard]>=0.141.1",
+    "pytest>=9.1.1",
     "python-dotenv>=1.2.3",
     "sqlalchemy[asyncio]>=2.0.52",
 ]
@@ -27,3 +28,15 @@ entrypoint = "inventory.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/inventory"]
+
+[tool.pytest.ini_options]
+testpaths = ["src/inventory/tests"]
+
+[tool.pytest-watcher]
+now = true
+clear = true
+
+[dependency-groups]
+dev = [
+    "pytest-watcher>=0.6.3",
+]
