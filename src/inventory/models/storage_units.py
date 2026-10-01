@@ -21,3 +21,4 @@ class StorageUnit(Base):
   )
   movies: Mapped[list["Movie"]] = relationship(back_populates="storage_unit")
   series: Mapped[list["Serie"]] = relationship(back_populates="storage_unit")
+  games: Mapped[list["Game"]] = relationship(back_populates="storage_unit")

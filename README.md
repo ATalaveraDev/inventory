@@ -139,11 +139,26 @@ All routes are under `/api` (`src/inventory/api/router.py`):
 
 ## Tests
 
+Run these commands from the repository root.
+
+**Backend (pytest):**
+
 ```bash
-npm --prefix frontend test   # Angular unit tests (Karma + Jasmine, needs Chrome)
+uv run pytest                                              # run all backend tests
+uv run pytest -v                                           # show each test result
+uv run pytest src/inventory/tests/test_games_respository.py # run a specific test file
 ```
 
-There is no backend test suite yet.
+Pytest discovers tests in `src/inventory/tests`, as configured in `pyproject.toml`.
+
+**Frontend (Karma + Jasmine, requires Chrome):**
+
+```bash
+npm --prefix frontend test                                       # watch for changes
+npm --prefix frontend test -- --watch=false --browsers=ChromeHeadless # run once
+```
+
+On Windows PowerShell, use `npm.cmd` instead of `npm` if script execution is restricted.
 
 ## Project layout
 

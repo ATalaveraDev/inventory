@@ -9,7 +9,7 @@ class GameRepository:
   def __init__(self, session: AsyncSession):
     self.session = session
 
-  async def create(self, game: Game):
+  async def create(self, game: Game) -> Game:
     self.session.add(game)
     await self.session.flush()
     await self.session.commit()
