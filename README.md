@@ -70,6 +70,11 @@ npm --prefix frontend start
 
 Open <http://localhost:4200>. The app redirects to `/storage-units`.
 
+The navigation provides separate pages at `/games`, `/movies`, `/series`, and
+`/storage-units`. Each page lists its items and includes a form to add a new one.
+Games require a platform; games, movies, and series can optionally be assigned
+to a storage unit. The former `/media` URL redirects to `/movies`.
+
 ## Running as a single production-style process
 
 `main.py` mounts `frontend/dist/inventory-ui/browser` at `/` when that directory exists, with an index.html fallback so Angular's client-side routes survive a page refresh. The mount happens last, so it never shadows `/api`, `/docs` or `/openapi.json`.

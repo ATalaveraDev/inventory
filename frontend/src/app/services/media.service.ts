@@ -10,6 +10,7 @@ interface MediaItemDto {
   title: string;
   year: number | null;
   storage_unit_id: number | null;
+  platform?: string;
 }
 
 /** The payload the API accepts. The id is assigned server side. */
@@ -18,6 +19,7 @@ type MediaItemCreateDto = Omit<MediaItemDto, 'id'>;
 const ENDPOINTS: Readonly<Record<MediaKind, string>> = {
   movie: '/api/movies/',
   series: '/api/series/',
+  game: '/api/games/',
 };
 
 /**
@@ -32,6 +34,7 @@ function toMediaItem(kind: MediaKind, dto: MediaItemDto): MediaItem {
     title: dto.title,
     year: dto.year,
     storageUnitId: dto.storage_unit_id,
+    ...(kind === 'game' ? { platform: dto.platform } : {}),
   };
 }
 
@@ -40,6 +43,7 @@ function toDto(draft: MediaItemCreate): MediaItemCreateDto {
     title: draft.title,
     year: draft.year,
     storage_unit_id: draft.storageUnitId,
+    ...(draft.kind === 'game' ? { platform: draft.platform } : {}),
   };
 }
 
@@ -65,7 +69,7 @@ export class MediaService {
       .pipe(map((dto) => toMediaItem(draft.kind, dto)));
   }
 
-  private listOf(kind: MediaKind): Observable<MediaItem[]> {
+  listOf(kind: MediaKind): Observable<MediaItem[]> {
     return this.http
       .get<MediaItemDto[]>(ENDPOINTS[kind])
       .pipe(map((dtos) => dtos.map((dto) => toMediaItem(kind, dto))));

@@ -1,4 +1,5 @@
 <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+  @if (!fixedKind()) {
   <fieldset class="kind">
     <legend class="kind__legend">Kind</legend>
     <div class="kind__options">
@@ -12,6 +13,7 @@
       </label>
     </div>
   </fieldset>
+  }
 
   <div class="field">
     <label class="field__label" for="media-title">Title</label>
@@ -21,7 +23,7 @@
            [attr.aria-describedby]="title.touched && title.invalid ? 'media-title-error' : null" />
     @if (title.touched && title.invalid) {
       <p class="field__error" id="media-title-error">
-        @if (title.hasError('required')) {
+        @if (title.hasError('required') || title.hasError('pattern')) {
           Give the title a name, such as "Seven Samurai".
         } @else {
           Titles are 100 characters at most.
@@ -29,6 +31,19 @@
       </p>
     }
   </div>
+
+  @if (fixedKind() === 'game') {
+    <div class="field">
+      <label class="field__label" for="game-platform">Platform</label>
+      <input class="field__input" id="game-platform" type="text" [formControl]="platform"
+             autocomplete="off" placeholder="e.g. Nintendo Switch"
+             [attr.aria-invalid]="platform.touched && platform.invalid ? 'true' : null"
+             [attr.aria-describedby]="platform.touched && platform.invalid ? 'game-platform-error' : null" />
+      @if (platform.touched && platform.invalid) {
+        <p class="field__error" id="game-platform-error">Enter a platform for this game.</p>
+      }
+    </div>
+  }
 
   <div class="field field--narrow">
     <label class="field__label" for="media-year">
@@ -40,7 +55,7 @@
            [attr.aria-describedby]="year.touched && year.invalid ? 'media-year-error' : null" />
     @if (year.touched && year.invalid) {
       <p class="field__error" id="media-year-error">
-        Use a year between {{ minYear }} and {{ maxYear }}.
+        Use a whole year between {{ minYear }} and {{ maxYear }}.
       </p>
     }
   </div>

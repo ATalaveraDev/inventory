@@ -3,7 +3,7 @@
  * fields and the library lists them side by side, so the UI treats them as one
  * kind of thing tagged with which table it came from.
  */
-export type MediaKind = 'movie' | 'series';
+export type MediaKind = 'movie' | 'series' | 'game';
 
 /** A movie or series as the API returns it. */
 export interface MediaItem {
@@ -12,6 +12,7 @@ export interface MediaItem {
   title: string;
   year: number | null;
   storageUnitId: number | null;
+  platform?: string;
 }
 
 /** The fields a caller supplies when creating one; the API assigns the id. */
@@ -24,4 +25,5 @@ export type MediaFilter = MediaKind | 'all';
 export const MEDIA_KIND_LABELS: Readonly<Record<MediaKind, string>> = {
   movie: 'Movie',
   series: 'Series',
+  game: 'Game',
 };

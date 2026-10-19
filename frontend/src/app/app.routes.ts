@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { MediaLibraryComponent } from './pages/media-library/media-library.component';
+import { MediaResourceComponent } from './pages/media-resource/media-resource.component';
 import { StorageUnitsComponent } from './pages/storage-units/storage-units.component';
 
 export const routes: Routes = [
@@ -10,9 +10,23 @@ export const routes: Routes = [
     title: 'Storage units · Inventory',
   },
   {
-    path: 'media',
-    component: MediaLibraryComponent,
-    title: 'Movies & series · Inventory',
+    path: 'games',
+    component: MediaResourceComponent,
+    title: 'Games · Inventory',
+    data: { kind: 'game', label: 'Games' },
   },
+  {
+    path: 'movies',
+    component: MediaResourceComponent,
+    title: 'Movies · Inventory',
+    data: { kind: 'movie', label: 'Movies' },
+  },
+  {
+    path: 'series',
+    component: MediaResourceComponent,
+    title: 'Series · Inventory',
+    data: { kind: 'series', label: 'Series' },
+  },
+  { path: 'media', pathMatch: 'full', redirectTo: 'movies' },
   { path: '**', redirectTo: 'storage-units' },
 ];

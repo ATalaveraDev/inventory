@@ -8,6 +8,12 @@
     </div>
 
     <dl class="card__facts">
+      @if (item().kind === 'game') {
+        <div class="fact">
+          <dt class="fact__label">Platform</dt>
+          <dd class="fact__value">{{ item().platform }}</dd>
+        </div>
+      }
       <div class="fact">
         <dt class="fact__label">Year</dt>
         <dd class="fact__value fact__value--figure">{{ item().year ?? '—' }}</dd>

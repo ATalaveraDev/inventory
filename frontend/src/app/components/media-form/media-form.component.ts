@@ -1,5 +1,5 @@
 import { Component, inject, input, output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MediaItemCreate, MediaKind } from '../../models/media-item';
 import { StorageUnit } from '../../models/storage-unit';
@@ -21,6 +21,8 @@ const FIRST_FILM_YEAR = 1888;
 export class MediaFormComponent {
   /** Disables the controls while the listener is saving. */
   readonly pending = input(false);
+  readonly fixedKind = input<MediaKind | null>(null);
+  readonly platform = new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)] });
 
   /** The units a title can be filed on. Filing is optional, as in the API. */
   readonly storageUnits = input<StorageUnit[]>([]);
@@ -34,10 +36,10 @@ export class MediaFormComponent {
 
   readonly form = this.fb.nonNullable.group({
     kind: ['movie' as MediaKind, Validators.required],
-    title: ['', [Validators.required, Validators.maxLength(100)]],
+    title: ['', [Validators.required, Validators.pattern(/\S/), Validators.maxLength(100)]],
     year: [
       null as number | null,
-      [Validators.min(FIRST_FILM_YEAR), Validators.max(this.maxYear)],
+      [Validators.min(FIRST_FILM_YEAR), Validators.max(this.maxYear), Validators.pattern(/^\d+$/)],
     ],
     storageUnitId: [null as number | null],
   });
@@ -47,22 +49,26 @@ export class MediaFormComponent {
   get year() { return this.form.controls.year; }
 
   submit(): void {
-    if (this.form.invalid) {
+    if (this.pending()) return;
+    if (this.form.invalid || (this.fixedKind() === 'game' && this.platform.invalid)) {
       this.form.markAllAsTouched();
+      this.platform.markAsTouched();
       return;
     }
 
     const { kind, title, year, storageUnitId } = this.form.getRawValue();
     this.create.emit({
-      kind,
+      kind: this.fixedKind() ?? kind,
       title: title.trim(),
       year: year ?? null,
       storageUnitId,
+      ...(this.fixedKind() === 'game' ? { platform: this.platform.value.trim() } : {}),
     });
   }
 
   /** Clears the fields. Called once the listener has saved the draft. */
   reset(): void {
     this.form.reset({ kind: 'movie', title: '', year: null, storageUnitId: null });
+    this.platform.reset();
   }
 }

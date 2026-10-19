@@ -1,0 +1,38 @@
+<section>
+  <header>
+    <h1 class="title">{{ label }}</h1>
+    <p class="lede">Browse your {{ label.toLowerCase() }} and add a new title to your collection.</p>
+  </header>
+
+  <section class="form" aria-labelledby="add-title">
+    <h2 id="add-title">Add {{ kind === 'series' ? 'a series' : 'a ' + kind }}</h2>
+    <app-media-form [fixedKind]="kind" [pending]="saving() || loading()"
+                    [storageUnits]="storageUnits()" (create)="add($event)" />
+  </section>
+
+  @if (unitsError(); as message) {
+    <p class="error" role="alert">{{ message }}
+      <button class="retry" type="button" (click)="loadUnits()">Retry storage units</button>
+    </p>
+  }
+  @if (saveError(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <section class="results" aria-labelledby="list-title" [attr.aria-busy]="loading()">
+    <h2 id="list-title">Your {{ label.toLowerCase() }}</h2>
+    @if (loadError(); as message) {
+      <p class="error" role="alert">{{ message }}
+        <button class="retry" type="button" [disabled]="saving()" (click)="load()">Retry</button>
+      </p>
+    }
+    @if (loading()) {
+      <p class="status" role="status">Loading {{ label.toLowerCase() }}&hellip;</p>
+    } @else if (items().length) {
+      <p class="count" aria-live="polite">{{ items().length }} {{ label.toLowerCase() }}</p>
+      <app-media-list [items]="items()" [storageUnits]="storageUnits()" />
+    } @else if (!loadError()) {
+      <p class="status">No {{ label.toLowerCase() }} yet. Add your first {{ kind }} using the form above.</p>
+    }
+  </section>
+</section>
